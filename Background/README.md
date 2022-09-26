@@ -1,4 +1,3 @@
-# DU-Modern-Screen-Flair
 Variety of backgrounds for screens.
 
 ## Standard V
