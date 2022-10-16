@@ -126,7 +126,7 @@ if #WrappedText == 1 then
     
     setNextTextAlign(layer, AlignH_Center, AlignV_Middle)
     setNextFillColor(layer, TextR, TextG, TextB , 1)
-    addText(layer, Font, WrappedText[ii], X+1*vh+17*vh, Y + 1*vh + (ii-1)*10*vh)
+    addText(layer, Font, WrappedText[1], X+1*vh+17*vh, Y + 1*vh)
 
 elseif #WrappedText == 2 then
     
