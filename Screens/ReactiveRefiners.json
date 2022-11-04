@@ -1,0 +1,148 @@
+{
+    "slots": {
+        "0": {
+            "name": "slot1",
+            "type": {
+                "events": [],
+                "methods": []
+            }
+        },
+        "1": {
+            "name": "slot2",
+            "type": {
+                "events": [],
+                "methods": []
+            }
+        },
+        "2": {
+            "name": "slot3",
+            "type": {
+                "events": [],
+                "methods": []
+            }
+        },
+        "3": {
+            "name": "slot4",
+            "type": {
+                "events": [],
+                "methods": []
+            }
+        },
+        "4": {
+            "name": "slot5",
+            "type": {
+                "events": [],
+                "methods": []
+            }
+        },
+        "5": {
+            "name": "slot6",
+            "type": {
+                "events": [],
+                "methods": []
+            }
+        },
+        "6": {
+            "name": "slot7",
+            "type": {
+                "events": [],
+                "methods": []
+            }
+        },
+        "7": {
+            "name": "slot8",
+            "type": {
+                "events": [],
+                "methods": []
+            }
+        },
+        "8": {
+            "name": "slot9",
+            "type": {
+                "events": [],
+                "methods": []
+            }
+        },
+        "9": {
+            "name": "slot10",
+            "type": {
+                "events": [],
+                "methods": []
+            }
+        },
+        "-1": {
+            "name": "unit",
+            "type": {
+                "events": [],
+                "methods": []
+            }
+        },
+        "-3": {
+            "name": "player",
+            "type": {
+                "events": [],
+                "methods": []
+            }
+        },
+        "-2": {
+            "name": "construct",
+            "type": {
+                "events": [],
+                "methods": []
+            }
+        },
+        "-4": {
+            "name": "system",
+            "type": {
+                "events": [],
+                "methods": []
+            }
+        },
+        "-5": {
+            "name": "library",
+            "type": {
+                "events": [],
+                "methods": []
+            }
+        }
+    },
+    "handlers": [
+        {
+            "code": "function round(num, numDecimalPlaces)\n    local mult = 10^(numDecimalPlaces or 0)\n    return math.floor(num * mult + 0.5) / mult\nend\n\nboolTonumber={[true]=1,[false]=0}\n\nOreTier = {\"4234772167\",\"3724036288\",\"299255727\",\"262147665\"}\nOreProducts = {}\nOreProducts[\"4234772167\"] = \"198782496\"\nOreProducts[\"3724036288\"] = \"2589986891\"\nOreProducts[\"299255727\"] = \"159858782\"\nOreProducts[\"262147665\"] = \"2240749601\"\n\nOreCounts = {}\n\nfor ii = 1,4 do\n    OreCounts[OreTier[ii]] = 0\nend\n\nrefcount = 0\nrefiners = {}\n\nfor _, value in pairs(unit) do\n    if type(value) == \"table\" and type(value.export) == \"table\" then -- it's an element\n        if value.getCyclesCompleted then\n            refcount = refcount + 1\n            refiners[refcount] = value\n        elseif value.getItemsMass then\n            container = value\n        elseif value.setHTML then\n            Screen = value\n        end\n    end\nend\n\nwaittime = container.updateContent()\nunit.setTimer('Update',waittime + 2)\nsystem.print([[Processing: ]] .. tostring(waittime + 2) .. [[s]])\n\nScreen.setRenderScript([[\n    function DrawPieChart(Pie,Legend,font,XX,YY,Scale,Data)\n    \n    local rx, ry = getResolution()\n    local vw = rx/100\n    local vh = ry/100\n    \n    XX = XX or 50*vw\n    YY = YY or 50*vh\n    Scale = Scale or 1\n    \n    setFontSize(font,math.sqrt(Scale)*5.9*vh)\n\n    x1 = 0.5*Scale\n    x2 = 0.6*Scale\n    y1 = 20*Scale\n    y2 = 30*Scale\n    y3 = 40*Scale\n\n    Data = Data or {0.3,0.2,0.4,0.1}\n    \n\n    LegendText = {\"4234772167\",\"3724036288\",\"299255727\",\"262147665\"}\n    \n    Rs = {1.0,1.0,0.2,0.2}\n    Gs = {0.2,0.5,1.0,0.7}\n    Bs = {0.2,0.2,0.5,0.2}\n    \n    for ii = 1,4 do\n        Rs[ii], Gs[ii], Bs[ii] = table.unpack(OreTable[LegendText[ii] ].color)\n        Rs[ii], Gs[ii], Bs[ii] = Rs[ii]/255, Gs[ii]/255, Bs[ii]/255 \n        LegendText[ii] = OreTable[LegendText[ii] ].displayNameWithSize\n    end\n\n    Old = 0\n    New = 0\n\n    DataNonZeros = 0\n    for jj = 1,4 do\n        if Data[jj] > 0 then\n            DataNonZeros = DataNonZeros + 1\n        end\n    end\n\n    for jj = 1,4 do\n\n        if Data[jj] > 0 then\n\n            New = New + Data[jj]\n\n            for ii = 360*Old,360*New,3 do\n\n                theta = 180 + ii\n\n                setNextFillColor(Pie,Rs[jj],Gs[jj],Bs[jj],1)\n                addQuad(Pie,\n                    XX - (-x2*vw*math.cos(math.rad(theta))+y2*vh*math.sin(math.rad(theta))),\n                    YY - (-x2*vw*math.sin(math.rad(theta))-y2*vh*math.cos(math.rad(theta))),\n                    XX - (x2*vw*math.cos(math.rad(theta))+y2*vh*math.sin(math.rad(theta))),\n                    YY - (x2*vw*math.sin(math.rad(theta))-y2*vh*math.cos(math.rad(theta))),\n                    XX - (x1*vw*math.cos(math.rad(theta))+y1*vh*math.sin(math.rad(theta))),\n                    YY - (x1*vw*math.sin(math.rad(theta))-y1*vh*math.cos(math.rad(theta))),\n                    XX - (-x1*vw*math.cos(math.rad(theta))+y1*vh*math.sin(math.rad(theta))),\n                    YY - (-x1*vw*math.sin(math.rad(theta))-y1*vh*math.cos(math.rad(theta)))\n                )\n\n            end\n\n            if DataNonZeros > 1 then\n\n                PointLoc = (360*Old + 360*New)/2    \n                theta = 180 + PointLoc\n\n                setNextFillColor(Legend, 1, 1, 1, 1)\n                addCircle(Legend, \n                    XX - (-((x1+x2)/2)*vw*math.cos(math.rad(theta))+((y1+y2)/2)*vh*math.sin(math.rad(theta))), \n                    YY - (-((x1+x2)/2)*vw*math.sin(math.rad(theta))-((y1+y2)/2)*vh*math.cos(math.rad(theta))), \n                    Scale*1.5*vh)\n\n                setNextFillColor(Legend, 1, 0, 1, 1)\n                addLine(Legend, \n                    XX - (-((x1+x2)/2)*vw*math.cos(math.rad(theta))+((y1+y2)/2)*vh*math.sin(math.rad(theta))), \n                    YY - (-((x1+x2)/2)*vw*math.sin(math.rad(theta))-((y1+y2)/2)*vh*math.cos(math.rad(theta))), \n                    XX - (-((x1+x2)/2)*vw*math.cos(math.rad(theta))+((y3))*vh*math.sin(math.rad(theta))), \n                    YY - (-((x1+x2)/2)*vw*math.sin(math.rad(theta))-((y3))*vh*math.cos(math.rad(theta)))\n                )\n\n                setNextFillColor(Legend, 1, 0, 1, 1)\n                addLine(Legend,         \n                    XX - (-((x1+x2)/2)*vw*math.cos(math.rad(theta))+((y3))*vh*math.sin(math.rad(theta))), \n                    YY - (-((x1+x2)/2)*vw*math.sin(math.rad(theta))-((y3))*vh*math.cos(math.rad(theta))),\n                    XX - (-((x1+x2)/2)*vw*math.cos(math.rad(theta))+((y3))*vh*math.sin(math.rad(theta))) + Signum[theta<360]*10*vw, \n                    YY - (-((x1+x2)/2)*vw*math.sin(math.rad(theta))-((y3))*vh*math.cos(math.rad(theta)))\n                )\n\n                setNextFillColor(Legend,Rs[jj],Gs[jj],Bs[jj],1, 1)\n                setNextTextAlign(Legend, AlignH_Center, AlignV_Middle)\n                addText(Legend, font, LegendText[jj], \n                    XX - (-((x1+x2)/2)*vw*math.cos(math.rad(theta))+((y3))*vh*math.sin(math.rad(theta))) + Signum[theta<360]*5*vw, \n                    YY - (-((x1+x2)/2)*vw*math.sin(math.rad(theta))-((y3))*vh*math.cos(math.rad(theta))) + Signum[math.cos(math.rad(PointLoc))<0]*4*vh*math.sqrt(Scale))\n\n                logMessage(PointLoc)\n\n                Old = New\n\n            elseif DataNonZeros == 1 then\n\n                setNextFillColor(Legend,Rs[jj],Gs[jj],Bs[jj],1, 1)\n                setNextTextAlign(Legend, AlignH_Center, AlignV_Middle)\n                addText(Legend, font, LegendText[jj], \n                    XX, \n                    YY)\n\n            end\n\n        end\n\n    end\nend\n\nlocal function Background(Logo,Aura0,Aura1,r,g,b,ar,ag,ab)\n    \n    local rx, ry = getResolution()\n    local vw = rx/100\n    local vh = ry/100\n\n    --- Main Color ---\n    local r = r or 0.4\n    local g = g or 0.4\n    local b = b or 0.4\n    \n    --- Accent Color ---\n    local ar = ar or 0.8\n    local ag = ag or 0.8\n    local ab = ab or 0.8\n\n    setBackgroundColor(0.05*r,0.05*g,0.05*b)\n\n    for ii = 3,165,8 do\n        setNextStrokeColor(Aura0,r,g,b,0.05)\n        setNextStrokeWidth(Aura0,0.05*vh)\n        addLine(Aura0,ii*vh,0,ii*vh,ry)\n    end\n\n    for ii = 6,98,8 do\n        setNextStrokeColor(Aura0,r,g,b,0.05)\n        setNextStrokeWidth(Aura0,0.05*vh)\n        addLine(Aura0,0,ii*vh,rx,ii*vh)\n    end\n\n    local PX = {0,1}\n    local PY = {0.03,0.03}\n\n    for ii = 1,#PX-1,1 do\n        setNextStrokeColor(Aura1,ar,ag,ab, 1) \n        addLine(Aura1, PX[ii]*rx, PY[ii]*ry, PX[ii+1]*rx, PY[ii+1]*ry) \n    end\n\n    for ii = 1,#PX-1,1 do\n        setNextStrokeColor(Aura1,ar,ag,ab, 1) \n        addLine(Aura1, PX[ii]*rx, ry-PY[ii]*ry, PX[ii+1]*rx, ry-PY[ii+1]*ry) \n    end\n\nend\n\nfunction DrawHub(layer,backlayer,r,g,b,CX,CY,scale)\n\n    local ry, rx = getResolution()\n    local vw = rx/100\n    local vh = ry/100\n\n    local PY = {-0.1715,\n        -0.1715,-0.1735,-0.1735,-0.1535,\n        0,\n        0.1535,0.1735,0.1735,0.1715,\n        0.1715,\n        0.1715,0.1735,0.1735,0.1535,\n        0,\n        -0.1535,-0.1735,-0.1735,-0.1715,\n        -0.1715}\n    local PX = {0,\n        -0.055,-0.057,-0.08,-0.128,\n        -0.128,\n        -0.128,-0.08,-0.057,-0.055,\n        0,\n        0.055,0.057,0.08,0.128,\n        0.128,\n        0.128,0.08,0.057,0.055,\n        0}\n\n    local r = r or R[1]\n    local g = g or G[1]\n    local b = b or B[1]\n\n    local CX = CX or 0.5*rx\n    local CY = CY or 0.5*ry\n    local scale = scale or 2\n\n    setDefaultStrokeWidth(layer,Shape_Line,scale*0.5*vh)\n    setDefaultStrokeColor(layer,Shape_Line,r,g,b, 1) \n\n    setDefaultFillColor(backlayer,Shape_Polygon,r + 1,g + 1,b + 1, 1) \n\n    for ii = 1,#PX-1,1 do\n        addLine(layer, scale*PX[ii]*rx + CX, scale*PY[ii]*ry + CY, scale*PX[ii+1]*rx + CX, scale*PY[ii+1]*ry + CY) \n    end\n\n    addTriangle(backlayer, \n        scale*PX[2]*rx + CX, scale*PY[2]*ry + CY, \n        scale*PX[#PX-1]*rx + CX, scale*PY[#PX-1]*ry + CY, \n        CX, CY)\n\n    addTriangle(backlayer, \n        -scale*PX[2]*rx + CX, scale*PY[2]*ry + CY, \n        -scale*PX[#PX-1]*rx + CX, scale*PY[#PX-1]*ry + CY, \n        CX, CY)\n\n    for ii = 1,#PX-1,1 do\n        addTriangle(backlayer, \n            -scale*PX[ii]*rx + CX, scale*PY[ii]*ry + CY, \n            -scale*PX[ii+1]*rx + CX, scale*PY[ii+1]*ry + CY, \n            CX, CY)\n    end\n\nend\n\nfunction mysplit(inputstr, sep)\n    if sep == nil then\n        sep = \"%s\"\n    end\n    local t={}\n    for str in string.gmatch(inputstr, \"([^\"..sep..\"]+)\") do\n        table.insert(t, str)\n    end\n    return t\nend\n\nSignum = {[true] = 1, [false] = -1}\n\nOreTable = {    \n    [\"4234772167\"]={color={255,255,129},displayNameWithSize=\"Hematite\",iconPath=\"resources_generated/env/voxel/ore/iron-ore/icons/env_iron-ore_icon.png\"},\n    [\"3724036288\"]={color={159,209,255},displayNameWithSize=\"Quartz\",iconPath=\"resources_generated/env/voxel/ore/silicon-ore/icons/env_silicon-ore_icon.png\"},\n    [\"299255727\"]={color={192,255,255},displayNameWithSize=\"Coal\",iconPath=\"resources_generated/env/voxel/ore/carbon-ore/icons/env_carbon-ore_icon.png\"},\n    [\"262147665\"]={color={255,188,68},displayNameWithSize=\"Bauxite\",iconPath=\"resources_generated/env/voxel/ore/aluminium-ore/icons/env_aluminium-ore_icon.png\"},\n    \n    [\"2289641763\"]={color={70,255,197},displayNameWithSize=\"Malachite\",iconPath=\"resources_generated/env/voxel/ore/copper-ore/icons/env_copper-ore_icon.png\"},\n    [\"3086347393\"]={color={255,128,88},displayNameWithSize=\"Limestone\",iconPath=\"resources_generated/env/voxel/ore/calcium-ore/icons/env_calcium-ore_icon.png\"},\n    [\"2029139010\"]={color={129,255,129},displayNameWithSize=\"Chromite\",iconPath=\"resources_generated/env/voxel/ore/chromium-ore/icons/env_chromium-ore_icon.png\"},\n    [\"343766315\"]={color={255,139,157},displayNameWithSize=\"Natron\",iconPath=\"resources_generated/env/voxel/ore/sodium-ore/icons/env_sodium-ore_icon.png\"},\n        \n    [\"4041459743\"]={color={74,255,74},displayNameWithSize=\"Pyrite\",iconPath=\"resources_generated/env/voxel/ore/sulfur-ore/icons/env_sulfur-ore_icon.png\"}, \n    [\"3837858336\"]={color={108,255,255},displayNameWithSize=\"Petalite\",iconPath=\"resources_generated/env/voxel/ore/lithium-ore/icons/env_lithium-ore_icon.png\"},    \n    [\"1050500112\"]={color={75,255,166},displayNameWithSize=\"Acanthite\",iconPath=\"resources_generated/env/voxel/ore/silver-ore/icons/env_silver-ore_icon.png\"},\n    [\"1065079614\"]={color={255,148,124},displayNameWithSize=\"Garnierite\",iconPath=\"resources_generated/env/voxel/ore/nickel-ore/icons/env_nickel-ore_icon.png\"},\n    \n    [\"1866812055\"]={color={255,103,63},displayNameWithSize=\"Gold Nuggets\",iconPath=\"resources_generated/env/voxel/ore/gold-ore/icons/env_gold-ore_icon.png\"},\n    [\"271971371\"]={color={255,166,104},displayNameWithSize=\"Kolbeckite\",iconPath=\"resources_generated/env/voxel/ore/scandium-ore/icons/env_scandium-ore_icon.png\"},\n    [\"3546085401\"]={color={255,132,79},displayNameWithSize=\"Cobaltite\",iconPath=\"resources_generated/env/voxel/ore/cobalt-ore/icons/env_cobalt-ore_icon.png\"},\n    [\"1467310917\"]={color={168,255,73},displayNameWithSize=\"Cryolite\",iconPath=\"resources_generated/env/voxel/ore/fluorine-ore/icons/env_fluorine-ore_icon.png\"},\n    \n    [\"3934774987\"]={color={90,206,255},displayNameWithSize=\"Rhodonite\",iconPath=\"resources_generated/env/voxel/ore/manganese-ore/icons/env_manganese-ore_icon.png\"},\n    [\"629636034\"]={color={255,203,255},displayNameWithSize=\"Ilmenite\",iconPath=\"resources_generated/env/voxel/ore/titanium-ore/icons/env_titanium-ore_icon.png\"},\n    [\"2162350405\"]={color={184,184,255},displayNameWithSize=\"Vanadinite\",iconPath=\"resources_generated/env/voxel/ore/vanadium-ore/icons/env_vanadium-ore_icon.png\"},    \n    [\"789110817\"]={color={231,229,74},displayNameWithSize=\"Columbite\",iconPath=\"resources_generated/env/voxel/ore/niobium-ore/icons/env_niobium-ore_icon.png\"}\n}\n\n----------------------------------------------------------------------------------------------------------------------------------------------------\n\nlocal rx, ry = getResolution()\nlocal vw = rx/100\nlocal vh = ry/100\n\nlocal Logo = createLayer()\nlocal Aura0 = createLayer()\nlocal Aura1 = createLayer()\nlocal backlayer = createLayer()\nlocal layer = createLayer()\n\nlocal Font = loadFont(getAvailableFontName(5), 10*vh)\n\nR = {1,0.2,0.2,1,1,0,1,0.5}\nG = {0.2,1,0.2,1,0,1,0.5,0.2}\nB = {0.2,0.2,1,0,1,1,0.2,1}\n\n\n\nr, g, b = 0.4,0.2,0.4\nar, ag, ab = r+0.4, g+0.4, b+0.4 \n\nBackground(Logo,Aura0,Aura1,r,g,b,ar,ag,ab)\n\nDrawHub(layer,backlayer,r,g,b,0.875*rx,0.6*ry,1)\nDrawHub(layer,backlayer,r,g,b,0.6875*rx,0.6*ry,1)\n\nsetNextTextAlign(Aura1, AlignH_Center, AlignV_Middle)\nsetNextFillColor(Aura1,r,g,b,1)\naddText(Aura1,Font,\"Tier 1\",78*vw,12.5*vh)\n\nsetNextTextAlign(Aura1, AlignH_Center, AlignV_Middle)\nsetNextFillColor(Aura1,r,g,b,1)\naddText(Aura1,Font,\"Ore\",0.6875*rx,23.5*vh)\n\nsetNextTextAlign(Aura1, AlignH_Center, AlignV_Middle)\nsetNextFillColor(Aura1,r,g,b,1)\naddText(Aura1,Font,\"Pure\",0.875*rx,23.5*vh)\n\n-- Initialize --\nlocal Pie = createLayer()\nlocal Legend = createLayer()\nlocal font = loadFont(getAvailableFontName(5), 5.9*vh) \n\nPayload = getInput()\n\nif Payload ~= nil and Payload ~= '' then\n    Info = mysplit(Payload,'$')\n    Data = {}\n    for ii = 1,4 do\n        Data[ii] = tonumber(Info[ii])\n    end\nend\n\nsetNextTextAlign(Aura1, AlignH_Center, AlignV_Middle)\nsetNextFillColor(Aura1,r,g,b,1)\naddText(Aura1,Font,\"Reactive Refiners\",30*vw,12.5*vh)\n\nDrawPieChart(Pie,Legend,font,30*vw,57*vh,0.8,Data)\n]]\n)\n\n    ",
+            "filter": {
+                "args": [],
+                "signature": "onStart()",
+                "slotKey": "-1"
+            },
+            "key": "0"
+        },
+        {
+            "code": "unit.stopTimer('Update')\n\ncontents = container.getContent()\n\nTotalQuantity = 0\nfor idx,val in pairs(contents) do\n\n    if OreCounts[tostring(val.id)] then\n\n        OreCounts[tostring(val.id)] = val.quantity\n        TotalQuantity = TotalQuantity + val.quantity\n\n    end\n\nend\n\nind = 0\nTotalCount = 0\n\nfor key,val in pairs(OreCounts) do\n    \n    ind = ind + 1 \n    CurrentCount = round(refcount*OreCounts[key]/TotalQuantity,0)\n    OreCounts[key] = CurrentCount\n    TotalCount = TotalCount + CurrentCount \n    \n    if ind == 4 then\n        \n        if TotalCount > refcount then\n            CurrentCount = CurrentCount - 1\n        elseif TotalCount < refcount then\n            CurrentCount = CurrentCount + 1\n        end\n        \n        OreCounts[key] = CurrentCount\n        \n    end\n    \nend\n\nTotalRefs = 0\n\nfor key,val in pairs(OreCounts) do\n    \n    if val > 0 then\n        for ii = TotalRefs + 1,TotalRefs + val do\n            \n            refiners[ii].stop(false,true)\n            refiners[ii].setOutput(OreProducts[key])        \n            \n        end\n    end\n    \n    TotalRefs = TotalRefs + val\n    \nend\n\nrefindex = 0\nunit.setTimer('Run',1)\n\nMessage = \nround((1+OreCounts[OreTier[1]])/10,2) .. \"$\" ..\nround((1+OreCounts[OreTier[2]])/10,2) .. \"$\" ..\nround((1+OreCounts[OreTier[3]])/10,2) .. \"$\" ..\nround((1+OreCounts[OreTier[4]])/10,2)\n\nScreen.setScriptInput(Message)\n\n\n\n\n",
+            "filter": {
+                "args": [
+                    {
+                        "value": "Update"
+                    }
+                ],
+                "signature": "onTimer(tag)",
+                "slotKey": "-1"
+            },
+            "key": "1"
+        },
+        {
+            "code": "refindex = refindex + 1\nrefiners[refindex].startRun()\n\nif refindex == refcount then\n    unit.stopTimer(\"Run\")\n    system.print(\"Reactive assignment complete!\")\nend",
+            "filter": {
+                "args": [
+                    {
+                        "value": "Run"
+                    }
+                ],
+                "signature": "onTimer(tag)",
+                "slotKey": "-1"
+            },
+            "key": "2"
+        }
+    ],
+    "methods": [],
+    "events": []
+}
